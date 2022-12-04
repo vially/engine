@@ -21,6 +21,8 @@
 #include "flutter/shell/platform/linux/fl_texture_registrar_private.h"
 #include "flutter/shell/platform/linux/public/flutter_linux/fl_plugin_registry.h"
 
+#include "flutter/fml/logging.h"
+
 // Unique number associated with platform tasks.
 static constexpr size_t kPlatformTaskRunnerIdentifier = 1;
 
@@ -871,6 +873,26 @@ G_MODULE_EXPORT FlTextureRegistrar* fl_engine_get_texture_registrar(
     FlEngine* self) {
   g_return_val_if_fail(FL_IS_ENGINE(self), nullptr);
   return self->texture_registrar;
+}
+
+G_MODULE_EXPORT void fl_engine_set_next_frame_callback(FlEngine* self,
+                                                       fml::closure callback) {
+  g_return_if_fail(FL_IS_ENGINE(self));
+
+  FML_LOG(INFO) << "scheduling next frame callback";
+  g_warning("scheduling next frame callback");
+
+  self->embedder_api.SetNextFrameCallback(
+      self->engine,
+      [](void* user_data) {
+        // Embedder callback runs on raster thread. Switch back to platform
+        // thread.
+        // fl_engine_post_task(task, target_time_nanos, user_data);
+
+        FML_LOG(INFO) << "next frame callback called";
+        g_warning("next frame callback called");
+      },
+      self);
 }
 
 void fl_engine_update_accessibility_features(FlEngine* self, int32_t flags) {

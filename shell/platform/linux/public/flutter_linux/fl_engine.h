@@ -14,6 +14,7 @@
 #include "fl_binary_messenger.h"
 #include "fl_dart_project.h"
 #include "fl_texture_registrar.h"
+#include "flutter/fml/closure.h"
 
 G_BEGIN_DECLS
 
@@ -54,6 +55,8 @@ FlBinaryMessenger* fl_engine_get_binary_messenger(FlEngine* engine);
  * Returns: an #FlTextureRegistrar.
  */
 FlTextureRegistrar* fl_engine_get_texture_registrar(FlEngine* engine);
+
+void fl_engine_set_next_frame_callback(FlEngine* engine, fml::closure callback);
 
 G_END_DECLS
 
